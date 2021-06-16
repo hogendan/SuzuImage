@@ -1,0 +1,24 @@
+<div>{{imageDatas.count}}件</div>
+<form action="{% url 'imagelist:deleteimage' imageListId %}" method="post">
+{% csrf_token %}
+<fieldset>
+    {% if imageDatas %}
+    <ul>
+        {% for imageData in imageDatas %}
+            <li>
+                <input type="checkbox" name="choice" id="imageData{{ forloop.counter }}"
+                    value="{{ imageData.id }}">
+                <p>{{imageData.disp_order}}</p>
+                <label for="imageData{{ forloop.counter }}">
+                    <img src="{{ imageData.thumbnail.url }}">
+                </label>
+                <p>{{imageData.file_path}}</p>
+            </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+        <p>No ImageDatas are available.</p>
+    {% endif %}
+</fieldset>
+<input type="submit" value="画像ファイル削除">
+</form>

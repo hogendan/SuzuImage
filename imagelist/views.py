@@ -17,9 +17,7 @@ from .models import ImageList, ImageListDetail
 from django.utils import timezone
 from PIL import Image
 
-
 def index(request):
-    print('fffff0')
     latest_filepath_list = ImageList.objects.order_by('file_path')[:30]
     context = {'latest_image_list': latest_filepath_list,}
     return render(request, 'imagelist/index.html', context)
@@ -47,17 +45,17 @@ def deleteImage(request, imageList_id):
         args=(imageList_id, )), context)
 
 def registerImageListFile(request):
-    print('ddddddddddddddd')
     if request.method != 'POST':
         return render(request, 'imagelist:index')
 
+    # Get filelist from request.
     files = request.FILES.getlist('imagefilelist')
+    # Import image to DB
+    lastImportId = 0
     for file in files:
-        importImage(file)
+        lastImportId = importImage(file)
 
-
-
-    imageList_id = 1
+    imageList_id = lastImportId
     latest_filepath_list = ImageList.objects.order_by('-file_path')[:30]
     context = {'latest_image_list': latest_filepath_list,}
     
@@ -67,10 +65,6 @@ def registerImageListFile(request):
 def importImage(targetFile):
     print('type: %s' % type(targetFile))
     imageroot = 'media\images'
-    # if not os.path.exists(file.):
-    #     print('ファイルが存在しません [%s]' %(importFilePath))
-    #     input()
-    #     exit()
 
     # いったんファイルを保存
     with open('temp.txt', 'wb+') as destination:
@@ -80,7 +74,8 @@ def importImage(targetFile):
     # ファイル名をDBへ登録
     print('ImageListへ書き込み中...')
     imagelistTbl = saveToImageListTbl(targetFile.name)
-    print('ImageList書き込み終了 Id=[%s]' % imagelistTbl.pk)
+    newImageListId = imagelistTbl.pk
+    print('ImageList書き込み終了 Id=[%s]' % newImageListId)
 
     print('画像ファイルをローカルに保存中...')
     # ファイル読み込み
@@ -110,6 +105,8 @@ def importImage(targetFile):
     # 保存した画像ファイルをDBへ登録
     saveToImageListDetailTbl(imagelistTbl, fullpath_list)
     print('ImageListDetail書き込み終了')
+    
+    return newImageListId
 
 def showImageSample():
     image = Image.open('media/images/51393749.jpeg')

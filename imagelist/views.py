@@ -1,5 +1,4 @@
 '''
-・DBへのイメージファイル登録は別プログラムで行う
 ・DBのイメージファイル（media\images）を読み込みList表示する
 ・Index.html
     ・画像リストファイルをリンクで表示する。
@@ -13,6 +12,7 @@ from django.http import Http404, HttpResponseRedirect
 from django.urls import reverse
 
 from .models import ImageList, ImageListDetail
+import dataDelete
 
 from django.utils import timezone
 from PIL import Image
@@ -68,6 +68,10 @@ def registerImageListFile(request):
     return HttpResponseRedirect(reverse('imagelist:listview',
         args=(imageList_id, )), context)
 
+def deleteAllData(request):
+    dataDelete.deleteAll()
+    return HttpResponseRedirect(reverse('imagelist:admin'))
+
 def importImage(targetFile):
     print('type: %s' % type(targetFile))
     imageroot = 'media\images'
@@ -114,9 +118,9 @@ def importImage(targetFile):
     
     return newImageListId
 
-def showImageSample():
-    image = Image.open('media/images/51393749.jpeg')
-    image.show()
+# def showImageSample():
+#     image = Image.open('media/images/51393749.jpeg')
+#     image.show()
 
 def saveToImageListTbl(filePath: str):
     imagelistTbl = ImageList()
@@ -124,7 +128,6 @@ def saveToImageListTbl(filePath: str):
     imagelistTbl.file_name = os.path.basename(filePath)
     imagelistTbl.save()
     return imagelistTbl
-
 
 def saveToImageListDetailTbl(imagelistTbl, filefullpath_list):
     disp_order = 0    

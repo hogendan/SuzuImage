@@ -6,23 +6,24 @@ django.setup()                                                      # コマン�
 
 from imagelist.models import ImageList, ImageListDetail
 
-if len(sys.argv) < 2:
-    print('パラメータに削除タイプを指定してください。[all or id]')
+# コマンドラインから実行する場合は、以下のコメントを解除する
+# if len(sys.argv) < 2:
+#     print('パラメータに削除タイプを指定してください。[all or id]')
 
 def deleteAll():
     ImageListDetail.objects.all().delete()
     ImageList.objects.all().delete()
     print('テーブルを全件削除しました。')
-    input()
 
 def deleteTarget(imageListId):
     ImageListDetail.objects.filter(imageList_id=imageListId).delete()
     ImageList.objects.filter(id=imageListId).delete()
     print('ID[%s]のデータをテーブルから削除しました。' % imageListId)
 
-deleteParam = sys.argv[1]
-if deleteParam.lower() == 'all':
-    deleteAll()
-else:
-    deleteTarget(deleteParam)
+# コマンドラインから実行する場合は、以下のコメントを解除する
+# deleteParam = sys.argv[1]
+# if deleteParam.lower() == 'all':
+#     deleteAll()
+# else:
+#     deleteTarget(deleteParam)
 

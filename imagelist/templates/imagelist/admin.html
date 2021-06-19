@@ -5,6 +5,10 @@
         <title>Admin</title>
     </head>
     <body>
-        <div>データ全削除</div>
+        <form method="POST">
+            {% csrf_token %}
+            <input type="submit" value="データ全削除" formaction="{% url 'imagelist:deletealldata' %}">
+            <input type="submit" value="作業フォルダ削除" formaction="">
+        </form>
     </body>
 </html>

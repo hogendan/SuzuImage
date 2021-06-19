@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>FileList</title>
+    </head>
+    <body>
+        <form action="{% url 'imagelist:registerimagelistfile' %}" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="file" name="imagefilelist" value="" accept=".txt" multiple required>
+            <input type="submit" value="登録">
+        </form>
+        {% if latest_image_list %}
+        <ul>
+            {% for image in latest_image_list %}
+                <li>
+                    <a href="{% url 'imagelist:listview' image.id %}">{{ image.file_name }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+            <p>No imageslist are available.</p>
+        {% endif %}
+    
+    </body>
+</html>

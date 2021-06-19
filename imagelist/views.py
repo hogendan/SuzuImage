@@ -18,9 +18,15 @@ from django.utils import timezone
 from PIL import Image
 
 def index(request):
+    return render(request, 'imagelist/index.html')
+
+def admin(request):
+    return render(request, 'imagelist/admin.html')
+
+def fileList(request):
     latest_filepath_list = ImageList.objects.order_by('file_path')[:30]
     context = {'latest_image_list': latest_filepath_list,}
-    return render(request, 'imagelist/index.html', context)
+    return render(request, 'imagelist/file_list.html', context)
 
 def listview(request, imagelist_id):
     try:
@@ -28,7 +34,7 @@ def listview(request, imagelist_id):
         context = {'imageDatas': imageDatas, 'imageListId': imagelist_id}
     except ImageList.DoesNotExist:
         raise Http404("Image does not exist")
-    return render(request, 'imagelist/files.html', context)
+    return render(request, 'imagelist/file_detail.html', context)
 
 def deleteImage(request, imageList_id):
     try:

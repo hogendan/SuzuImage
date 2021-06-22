@@ -12,7 +12,7 @@ from django.http import Http404, HttpResponseRedirect
 from django.urls import reverse
 
 from .models import ImageList, ImageListDetail
-import dataDelete
+import imagelist.logics.dataDelete
 
 from django.utils import timezone
 from PIL import Image
@@ -21,10 +21,12 @@ def index(request):
     return render(request, 'imagelist/index.html')
 
 def admin(request):
-    return render(request, 'imagelist/admin.html')
+    filepath_list = ImageList.objects.order_by('-id')
+    context = {'filepath_list': filepath_list,}
+    return render(request, 'imagelist/admin.html', context)
 
 def fileList(request):
-    latest_filepath_list = ImageList.objects.order_by('file_path')[:30]
+    latest_filepath_list = ImageList.objects.order_by('-id')[:30]
     context = {'latest_image_list': latest_filepath_list,}
     return render(request, 'imagelist/file_list.html', context)
 
@@ -69,7 +71,15 @@ def registerImageListFile(request):
         args=(imageList_id, )), context)
 
 def deleteAllData(request):
-    dataDelete.deleteAll()
+    imagelist.logics.dataDelete.deleteAll()
+    filepath_list = ImageList.objects.order_by('-id')
+    context = {'filepath_list': filepath_list,}
+    return HttpResponseRedirect(reverse('imagelist:admin'))
+
+def deleteAt(request, imagelist_id):
+    imagelist.logics.dataDelete.deleteAt(imagelist_id)
+    filepath_list = ImageList.objects.order_by('-id')
+    context = {'filepath_list': filepath_list,}
     return HttpResponseRedirect(reverse('imagelist:admin'))
 
 def importImage(targetFile):

@@ -10,5 +10,10 @@
             <input type="submit" value="データ全削除" formaction="{% url 'imagelist:deletealldata' %}">
             <input type="submit" value="作業フォルダ削除" formaction="">
         </form>
+        {% for filepath in filepath_list %}
+            <li>
+                <span>{{ filepath.file_name }}</span><a href="{% url 'imagelist:deleteat' filepath.id %}">削除</a>
+            </li>
+        {% endfor %}
     </body>
 </html>

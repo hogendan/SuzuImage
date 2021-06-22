@@ -15,7 +15,7 @@ def deleteAll():
     ImageList.objects.all().delete()
     print('テーブルを全件削除しました。')
 
-def deleteTarget(imageListId):
+def deleteAt(imageListId):
     ImageListDetail.objects.filter(imageList_id=imageListId).delete()
     ImageList.objects.filter(id=imageListId).delete()
     print('ID[%s]のデータをテーブルから削除しました。' % imageListId)
@@ -25,5 +25,5 @@ def deleteTarget(imageListId):
 # if deleteParam.lower() == 'all':
 #     deleteAll()
 # else:
-#     deleteTarget(deleteParam)
+#     deleteAt(deleteParam)
 

@@ -8,7 +8,7 @@
 '''
 import os
 from django.shortcuts import render
-from django.http import Http404, HttpResponseRedirect
+from django.http import Http404, HttpResponseRedirect, FileResponse
 from django.urls import reverse
 
 from .models import ImageList, ImageListDetail
@@ -91,12 +91,14 @@ def createImageListFile(request, imageListId):
         for imageData in imageDatas:
             pathList = pathList + [imageData.file_path]
         # ファイル作成
+        outputFilePath = os.path.join('out', outputFileName)
         fc = FileCreator.FileCreator()
-        fc.createImageListFile(os.path.join('out', outputFileName), pathList)
+        fc.createImageListFile(outputFilePath, pathList)
         context = {'imageDatas': imageDatas, 'imageListId': imageListId}
     except ImageList.DoesNotExist:
         raise Http404("Image does not exist")
-    return render(request, 'imagelist/file_detail.html', context)
+    # return render(request, 'imagelist/file_detail.html', context)
+    return FileResponse(open(outputFilePath, "rb"), as_attachment=True, filename=outputFileName)
 
 # def showImageSample():
 #     image = Image.open('media/images/51393749.jpeg')

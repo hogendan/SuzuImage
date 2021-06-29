@@ -9,6 +9,8 @@
         <form method="post">
             <span style="margin: 5px;">出力するテキストファイル名</span>
             <input type="text" name="outputFileName" value="">
+            <input type="submit" value="画像ファイル削除" formaction="{% url 'imagelist:deleteimage' imageListId %}">
+            <input type="submit" value="テキストファイル作成" formaction="{% url 'imagelist:createimagelistfile' imageListId %}">
             {% csrf_token %}
             <fieldset>
                 {% if imageDatas %}

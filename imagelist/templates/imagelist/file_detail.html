@@ -5,8 +5,10 @@
         <title>FileDetail</title>
     </head>
     <body>
-        <div>{{imageDatas.count}}件</div>
-        <form action="{% url 'imagelist:deleteimage' imageListId %}" method="post">
+        <div style="margin: 5px;">{{imageDatas.count}}件</div>
+        <form method="post">
+            <span style="margin: 5px;">出力するテキストファイル名</span>
+            <input type="text" name="outputFileName" value="">
             {% csrf_token %}
             <fieldset>
                 {% if imageDatas %}
@@ -27,7 +29,8 @@
                     <p>No ImageDatas are available.</p>
                 {% endif %}
             </fieldset>
-            <input type="submit" value="画像ファイル削除">
+            <input type="submit" value="画像ファイル削除" formaction="{% url 'imagelist:deleteimage' imageListId %}">
+            <input type="submit" value="テキストファイル作成" formaction="{% url 'imagelist:createimagelistfile' imageListId %}">
         </form>
     </body>
 </html>

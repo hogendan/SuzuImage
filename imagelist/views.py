@@ -12,7 +12,7 @@ from django.http import Http404, HttpResponseRedirect
 from django.urls import reverse
 
 from .models import ImageList, ImageListDetail
-import imagelist.logics.dataDelete
+from imagelist.logics import dataDelete, FileCreator
 from .logics.ImageImporter import ImageImporter
 
 from django.utils import timezone
@@ -72,16 +72,31 @@ def registerImageListFile(request):
         args=(imageList_id, )), context)
 
 def deleteAllData(request):
-    imagelist.logics.dataDelete.deleteAll()
+    dataDelete.deleteAll()
     filepath_list = ImageList.objects.order_by('-id')
     context = {'filepath_list': filepath_list,}
     return HttpResponseRedirect(reverse('imagelist:admin'))
 
 def deleteAt(request, imagelist_id):
-    imagelist.logics.dataDelete.deleteAt(imagelist_id)
+    dataDelete.deleteAt(imagelist_id)
     filepath_list = ImageList.objects.order_by('-id')
     context = {'filepath_list': filepath_list,}
     return HttpResponseRedirect(reverse('imagelist:admin'))
+
+def createImageListFile(request, imageListId):
+    try:
+        outputFileName = request.POST.get('outputFileName')
+        imageDatas = ImageListDetail.objects.filter(imageList_id=imageListId)
+        pathList = []
+        for imageData in imageDatas:
+            pathList = pathList + [imageData.file_path]
+        # ファイル作成
+        fc = FileCreator.FileCreator()
+        fc.createImageListFile(os.path.join('out', outputFileName), pathList)
+        context = {'imageDatas': imageDatas, 'imageListId': imageListId}
+    except ImageList.DoesNotExist:
+        raise Http404("Image does not exist")
+    return render(request, 'imagelist/file_detail.html', context)
 
 # def showImageSample():
 #     image = Image.open('media/images/51393749.jpeg')

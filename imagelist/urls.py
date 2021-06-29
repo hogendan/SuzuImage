@@ -14,5 +14,6 @@ urlpatterns = [
     path('<int:imageList_id>/deleteimage/', views.deleteImage, name='deleteimage'),
     path('register/', views.registerImageListFile, name='registerimagelistfile'),
     path('deleteall/', views.deleteAllData, name='deletealldata'),
-    path('<int:imagelist_id>deleteat/', views.deleteAt, name='deleteat'),
+    path('<int:imagelist_id>/deleteat/', views.deleteAt, name='deleteat'),
+    path('<int:imageListId>/createimagelistfile/', views.createImageListFile, name='createimagelistfile')
 ]

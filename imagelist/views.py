@@ -32,8 +32,9 @@ def fileList(request):
 
 def listview(request, imagelist_id):
     try:
-        imageDatas = ImageListDetail.objects.filter(imageList_id=imagelist_id)
-        context = {'imageDatas': imageDatas, 'imageListId': imagelist_id}
+        fileList = ImageList.objects.order_by('-id')
+        imageDatas = ImageListDetail.objects.filter(imageList_id=imagelist_id).order_by('disp_order')
+        context = {'imageDatas': imageDatas, 'imageListId': imagelist_id, 'fileList': fileList,}
     except ImageList.DoesNotExist:
         raise Http404("Image does not exist")
     return render(request, 'imagelist/file_detail.html', context)
@@ -83,10 +84,40 @@ def deleteAt(request, imagelist_id):
     context = {'filepath_list': filepath_list,}
     return HttpResponseRedirect(reverse('imagelist:admin'))
 
+'''
+画面に表示されている画像の保存パスをテキストファイルに出力する
+'''
 def createImageListFile(request, imageListId):
     try:
-        outputFileName = request.POST.get('outputFileName')
+        outputFileName = request.POST.get('outputFileName') # ファイル名テキストボックス入力値
+        selectedImageListId = request.POST.get('fileList')  # 画像リストファイルコンボ選択値
+        checkedList = request.POST.getlist('choice')        # 選択された画像ファイルID
+
+        targetImageList = ImageList.objects.get(pk=selectedImageListId)
+        max_disp_order = ImageListDetail.objects.filter(imageList_id=selectedImageListId).order_by('-disp_order')[0].disp_order
+        for id in checkedList:
+            max_disp_order += 1
+            detail = ImageListDetail.objects.get(pk=id)
+            new_detail = ImageListDetail()
+            new_detail.imageList = targetImageList
+            new_detail.file_path = detail.file_path
+            new_detail.image_data = detail.image_data
+            new_detail.disp_order = max_disp_order
+            new_detail.save()
+
+        ''' 
+        1．outputFileNameが指定されていたら、ImageListに新規登録する。そしてそのImageListを画像追加対象とする
+        2．selectedImageListIdが指定されていたら、そのImageListを画像追加対象とする
+        3．POSTでチェックした画像IDを取得できるようにする。
+        4．その画像IDのImageDetailを、1or2のImageListIdのImageDetailに追加する
+        '''
+
+        '''
+        以下の処理は別のファイル出力処理を作ったら移動する
+        '''
+        # 画像データを取得する
         imageDatas = ImageListDetail.objects.filter(imageList_id=imageListId)
+        # 画像ファイルパスを取得する
         pathList = []
         for imageData in imageDatas:
             pathList = pathList + [imageData.file_path]

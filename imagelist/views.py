@@ -14,22 +14,35 @@ from django.urls import reverse
 from .models import ImageList, ImageListDetail
 from imagelist.logics import dataDelete, FileCreator
 from .logics.ImageImporter import ImageImporter
+from .logics.ImageListDao import ImageListDao
 
 from django.utils import timezone
 
+'''
+index
+'''
 def index(request):
     return render(request, 'imagelist/index.html')
 
+'''
+管理画面
+'''
 def admin(request):
     filepath_list = ImageList.objects.order_by('-id')
     context = {'filepath_list': filepath_list,}
     return render(request, 'imagelist/admin.html', context)
 
+'''
+ファイル一覧
+'''
 def fileList(request):
     latest_filepath_list = ImageList.objects.order_by('-id')[:30]
     context = {'latest_image_list': latest_filepath_list,}
     return render(request, 'imagelist/file_list.html', context)
 
+'''
+ファイル詳細一覧
+'''
 def listview(request, imagelist_id):
     try:
         fileList = ImageList.objects.order_by('-id')
@@ -39,6 +52,9 @@ def listview(request, imagelist_id):
         raise Http404("Image does not exist")
     return render(request, 'imagelist/file_detail.html', context)
 
+'''
+画像削除
+'''
 def deleteImage(request, imageList_id):
     try:
         # 削除処理
@@ -53,6 +69,9 @@ def deleteImage(request, imageList_id):
     return HttpResponseRedirect(reverse('imagelist:listview', 
         args=(imageList_id, )), context)
 
+'''
+ファイル登録
+'''
 def registerImageListFile(request):
     if request.method != 'POST':
         return render(request, 'imagelist:index')
@@ -72,12 +91,18 @@ def registerImageListFile(request):
     return HttpResponseRedirect(reverse('imagelist:listview',
         args=(imageList_id, )), context)
 
+'''
+全ファイル削除
+'''
 def deleteAllData(request):
     dataDelete.deleteAll()
     filepath_list = ImageList.objects.order_by('-id')
     context = {'filepath_list': filepath_list,}
     return HttpResponseRedirect(reverse('imagelist:admin'))
 
+'''
+個別ファイル削除
+'''
 def deleteAt(request, imagelist_id):
     dataDelete.deleteAt(imagelist_id)
     filepath_list = ImageList.objects.order_by('-id')
@@ -92,6 +117,47 @@ def createImageListFile(request, imageListId):
         outputFileName = request.POST.get('outputFileName') # ファイル名テキストボックス入力値
         selectedImageListId = request.POST.get('fileList')  # 画像リストファイルコンボ選択値
         checkedList = request.POST.getlist('choice')        # 選択された画像ファイルID
+        
+        # ファイル名テキストが入力されていたら新規ファイルとして登録する。さらにその新規ファイルに選択画像を登録する。
+        if len(str(outputFileName).strip()) > 0:
+            # 新規ファイル作成
+            # TODO:　リファクタ
+            imageList = ImageList()
+            imageList.file_name = outputFileName
+            imageList.file_path = os.path.join('out', outputFileName)
+            imageList.save()
+            # 選択した画像を登録
+            disp_order = 0
+            for id in checkedList:
+                detail = ImageListDetail.objects.get(pk=id)
+                disp_order += 1
+                new_detail = ImageListDetail()
+                new_detail.imageList = imageList
+                new_detail.disp_order = disp_order
+                new_detail.file_path = detail.file_path
+                new_detail.image_data = detail.image_data
+                new_detail.save()
+            # 新規ファイルの画像一覧を表示
+            fileList = ImageList.objects.order_by('-id')
+            imageDatas = ImageListDetail.objects.filter(imageList_id=imageList.pk).order_by('disp_order')
+            context = {'imageDatas': imageDatas, 'imageListId': imageList.pk, 'fileList': fileList,}
+            return HttpResponseRedirect(reverse('imagelist:listview', 
+                args=(imageList.pk, )), context)
+
+
+        if outputFileName == None or len(outputFileName) == 0:
+            # TODO: 元画面に戻したいだけだが、いちいちデータ取り直すのが嫌だ。
+            fileList = ImageList.objects.order_by('-id')
+            imageDatas = ImageListDetail.objects.filter(imageList_id=imageListId).order_by('disp_order')
+            context = {'imageDatas': imageDatas, 'imageListId': imageListId, 'fileList': fileList,}
+            return HttpResponseRedirect(reverse('imagelist:listview', 
+                args=(imageListId, )), context)
+        '''        
+        TODO: 
+            ・ファイル名テキストが入力されていたら新規ファイルとして登録する。さらにその新規ファイルに選択画像を登録する。
+            ・ファイル選択コンボが選択されていたら、そのファイルに選択画像を登録する。
+            ・両方入力されていたらテキスト入力を採用する。選択は無視。
+        '''        
 
         targetImageList = ImageList.objects.get(pk=selectedImageListId)
         max_disp_order = ImageListDetail.objects.filter(imageList_id=selectedImageListId).order_by('-disp_order')[0].disp_order

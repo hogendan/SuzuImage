@@ -12,9 +12,9 @@ from django.http import Http404, HttpResponseRedirect, FileResponse
 from django.urls import reverse
 
 from .models import ImageList, ImageListDetail
-from imagelist.logics import dataDelete, FileCreator
+from imagelist.logics import dataDelete, FileCreator, ImageOperator
 from .logics.ImageImporter import ImageImporter
-from .logics.ImageListDao import ImageListDao
+from .logics.ImageListDao import ImageListDao, ImageListDetailDao
 
 from django.utils import timezone
 
@@ -111,6 +111,10 @@ def deleteAt(request, imagelist_id):
 
 '''
 画面に表示されている画像の保存パスをテキストファイルに出力する
+    1．outputFileNameが指定されていたら、ImageListに新規登録する。そしてそのImageListを画像追加対象とする
+    2．selectedImageListIdが指定されていたら、そのImageListを画像追加対象とする
+    3．POSTでチェックした画像IDを取得できるようにする。
+    4．その画像IDのImageDetailを、1or2のImageListIdのImageDetailに追加する
 '''
 def createImageListFile(request, imageListId):
     try:
@@ -120,45 +124,20 @@ def createImageListFile(request, imageListId):
         
         # ファイル名テキストが入力されていたら新規ファイルとして登録する。さらにその新規ファイルに選択画像を登録する。
         if len(str(outputFileName).strip()) > 0:
-            # 新規ファイル作成
-            # TODO:　リファクタ
-            imageList = ImageList()
-            imageList.file_name = outputFileName
-            imageList.file_path = os.path.join('out', outputFileName)
-            imageList.save()
-            # 選択した画像を登録
-            disp_order = 0
-            for id in checkedList:
-                detail = ImageListDetail.objects.get(pk=id)
-                disp_order += 1
-                new_detail = ImageListDetail()
-                new_detail.imageList = imageList
-                new_detail.disp_order = disp_order
-                new_detail.file_path = detail.file_path
-                new_detail.image_data = detail.image_data
-                new_detail.save()
+            # 選択した画像で新規ファイル作成
+            imageOpe = ImageOperator.ImageOperator()
+            newImageList = imageOpe.Create(outputFileName, 
+                                            os.path.join('out', outputFileName), 
+                                            checkedList)
             # 新規ファイルの画像一覧を表示
-            fileList = ImageList.objects.order_by('-id')
-            imageDatas = ImageListDetail.objects.filter(imageList_id=imageList.pk).order_by('disp_order')
-            context = {'imageDatas': imageDatas, 'imageListId': imageList.pk, 'fileList': fileList,}
+            imageDatas = ImageListDetail.objects.filter(imageList_id=newImageList.pk).order_by('disp_order')
+            context = {'imageDatas': imageDatas, 
+                        'imageListId': newImageList.pk, 
+                        'fileList': ImageList.objects.order_by('-id'),}
             return HttpResponseRedirect(reverse('imagelist:listview', 
-                args=(imageList.pk, )), context)
+                args=(newImageList.pk, )), context)
 
-
-        if outputFileName == None or len(outputFileName) == 0:
-            # TODO: 元画面に戻したいだけだが、いちいちデータ取り直すのが嫌だ。
-            fileList = ImageList.objects.order_by('-id')
-            imageDatas = ImageListDetail.objects.filter(imageList_id=imageListId).order_by('disp_order')
-            context = {'imageDatas': imageDatas, 'imageListId': imageListId, 'fileList': fileList,}
-            return HttpResponseRedirect(reverse('imagelist:listview', 
-                args=(imageListId, )), context)
-        '''        
-        TODO: 
-            ・ファイル名テキストが入力されていたら新規ファイルとして登録する。さらにその新規ファイルに選択画像を登録する。
-            ・ファイル選択コンボが選択されていたら、そのファイルに選択画像を登録する。
-            ・両方入力されていたらテキスト入力を採用する。選択は無視。
-        '''        
-
+        # ファイル名テキストが未入力なら、選択されたファイルに画像を追加する
         targetImageList = ImageList.objects.get(pk=selectedImageListId)
         max_disp_order = ImageListDetail.objects.filter(imageList_id=selectedImageListId).order_by('-disp_order')[0].disp_order
         for id in checkedList:
@@ -171,31 +150,29 @@ def createImageListFile(request, imageListId):
             new_detail.disp_order = max_disp_order
             new_detail.save()
 
-        ''' 
-        1．outputFileNameが指定されていたら、ImageListに新規登録する。そしてそのImageListを画像追加対象とする
-        2．selectedImageListIdが指定されていたら、そのImageListを画像追加対象とする
-        3．POSTでチェックした画像IDを取得できるようにする。
-        4．その画像IDのImageDetailを、1or2のImageListIdのImageDetailに追加する
         '''
+        以下の処理は別のファイル出力処理を作るときに参考するため残してある
+        '''
+        # # 画像データを取得する
+        # imageDatas = ImageListDetail.objects.filter(imageList_id=imageListId)
+        # # 画像ファイルパスを取得する
+        # pathList = []
+        # for imageData in imageDatas:
+        #     pathList = pathList + [imageData.file_path]
+        # # ファイル作成
+        # outputFilePath = os.path.join('out', outputFileName)
+        # fc = FileCreator.FileCreator()
+        # fc.createImageListFile(outputFilePath, pathList)
+        # context = {'imageDatas': imageDatas, 'imageListId': imageListId}
+        # return FileResponse(open(outputFilePath, "rb"), as_attachment=True, filename=outputFileName)
 
-        '''
-        以下の処理は別のファイル出力処理を作ったら移動する
-        '''
         # 画像データを取得する
         imageDatas = ImageListDetail.objects.filter(imageList_id=imageListId)
-        # 画像ファイルパスを取得する
-        pathList = []
-        for imageData in imageDatas:
-            pathList = pathList + [imageData.file_path]
-        # ファイル作成
-        outputFilePath = os.path.join('out', outputFileName)
-        fc = FileCreator.FileCreator()
-        fc.createImageListFile(outputFilePath, pathList)
         context = {'imageDatas': imageDatas, 'imageListId': imageListId}
     except ImageList.DoesNotExist:
         raise Http404("Image does not exist")
-    # return render(request, 'imagelist/file_detail.html', context)
-    return FileResponse(open(outputFilePath, "rb"), as_attachment=True, filename=outputFileName)
+    return HttpResponseRedirect(reverse('imagelist:listview', 
+        args=(imageListId, )), context)
 
 # def showImageSample():
 #     image = Image.open('media/images/51393749.jpeg')

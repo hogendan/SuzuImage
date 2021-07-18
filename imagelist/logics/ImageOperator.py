@@ -8,5 +8,5 @@ class ImageOperator:
         newImageList = imageListDao.register(fileName, filePath)
         # ImageListDetail登録
         detailDao = ImageListDetailDao()
-        detailDao.register(detailIds, newImageList)
+        detailDao.register(detailIds, newImageList.id)
         return newImageList

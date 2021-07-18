@@ -138,18 +138,8 @@ def createImageListFile(request, imageListId):
                 args=(newImageList.pk, )), context)
 
         # ファイル名テキストが未入力なら、選択されたファイルに画像を追加する
-        targetImageList = ImageList.objects.get(pk=selectedImageListId)
-        max_disp_order = ImageListDetail.objects.filter(imageList_id=selectedImageListId).order_by('-disp_order')[0].disp_order
-        for id in checkedList:
-            max_disp_order += 1
-            detail = ImageListDetail.objects.get(pk=id)
-            new_detail = ImageListDetail()
-            new_detail.imageList = targetImageList
-            new_detail.file_path = detail.file_path
-            new_detail.image_data = detail.image_data
-            new_detail.disp_order = max_disp_order
-            new_detail.save()
-
+        detailDao = ImageListDetailDao()
+        detailDao.register(checkedList, imageListId)
         '''
         以下の処理は別のファイル出力処理を作るときに参考するため残してある
         '''

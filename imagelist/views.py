@@ -143,18 +143,6 @@ def createImageListFile(request, imageListId):
         '''
         以下の処理は別のファイル出力処理を作るときに参考するため残してある
         '''
-        # # 画像データを取得する
-        # imageDatas = ImageListDetail.objects.filter(imageList_id=imageListId)
-        # # 画像ファイルパスを取得する
-        # pathList = []
-        # for imageData in imageDatas:
-        #     pathList = pathList + [imageData.file_path]
-        # # ファイル作成
-        # outputFilePath = os.path.join('out', outputFileName)
-        # fc = FileCreator.FileCreator()
-        # fc.createImageListFile(outputFilePath, pathList)
-        # context = {'imageDatas': imageDatas, 'imageListId': imageListId}
-        # return FileResponse(open(outputFilePath, "rb"), as_attachment=True, filename=outputFileName)
 
         # 画像データを取得する
         imageDatas = ImageListDetail.objects.filter(imageList_id=imageListId)
@@ -163,6 +151,25 @@ def createImageListFile(request, imageListId):
         raise Http404("Image does not exist")
     return HttpResponseRedirect(reverse('imagelist:listview', 
         args=(imageListId, )), context)
+
+'''
+表示中のImageListを出力する
+'''
+def outputImageListFile(request, imageListId):
+    # 画像データを取得する
+    imageDatas = ImageListDetail.objects.filter(imageList_id=imageListId)
+    fileName = ImageList.objects.get(pk=imageListId).file_name
+    # 画像ファイルパスを取得する
+    pathList = []
+    for imageData in imageDatas:
+        pathList = pathList + [imageData.file_path]
+    # ファイル作成
+    outputFilePath = os.path.join('out', fileName)
+    fc = FileCreator.FileCreator()
+    fc.createImageListFile(outputFilePath, pathList)
+    context = {'imageDatas': imageDatas, 'imageListId': imageListId}
+    return FileResponse(open(outputFilePath, "rb"), as_attachment=True, filename=fileName)
+    
 
 # def showImageSample():
 #     image = Image.open('media/images/51393749.jpeg')

@@ -7,11 +7,12 @@
     <body>
         <div style="margin: 5px;">{{imageDatas.count}}件</div>
         <form method="post">
+            {% csrf_token %}
             <span style="margin: 5px;">出力するテキストファイル名</span>
             <input type="text" name="outputFileName" value="">
             <input type="submit" value="画像ファイル削除" formaction="{% url 'imagelist:deleteimage' imageListId %}">
             <input type="submit" value="テキストファイル作成" formaction="{% url 'imagelist:createimagelistfile' imageListId %}">
-            {% csrf_token %}
+            <input type="submit" value="画像リスト出力" formaction="{% url 'imagelist:outputimagelistfile' imageListId %}">
             <select name="fileList">
                 {% for file in fileList %}
                     <option value="{{ file.id }}">{{ file.file_name }}</option>

@@ -139,7 +139,7 @@ def createImageListFile(request, imageListId):
 
         # ファイル名テキストが未入力なら、選択されたファイルに画像を追加する
         detailDao = ImageListDetailDao()
-        detailDao.register(checkedList, imageListId)
+        detailDao.register(checkedList, selectedImageListId)
         '''
         以下の処理は別のファイル出力処理を作るときに参考するため残してある
         '''

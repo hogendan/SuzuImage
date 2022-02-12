@@ -6,3 +6,23 @@
 .bg-dark {
     background: #333;
 }
+
+.btn-primary {
+    background: #28a745;
+    border: 1px #28a745 solid;
+    border-radius: 5px;
+    padding: 10px;
+    color: #fff;
+}
+
+.btn-secondary {
+    background: #28a745;
+    border: 1px #28a745 solid;
+    border-radius: 5px;
+    padding: 5px;
+    color: #fff;
+}
+
+.btn-primary:hover, .btn-secondary:hover {
+    opacity: 70%;
+}

@@ -93,3 +93,69 @@ header {
 .navbar a:hover {
     border-bottom: 2px solid #f7c08a;
 }
+
+.hero.min {
+    height: 70px;
+}
+
+/* Admin Control */
+.admin-top {
+    margin: 30px;
+}
+
+.admin-filelist {
+    margin-left: 30px;
+}
+
+.filename-list {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.file-icon {
+    margin-right: 10px;
+}
+
+.filename-list .filename  {
+    /* display: inline-block; */
+    width: 200px;
+}
+
+/* Files */
+.files {
+    margin: 30px;
+}
+
+.file-list {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.file-list a:hover {
+    color: #f7c08a;
+}
+
+/* File Contents */
+.operation {
+    margin: 30px;
+}
+
+.images ul {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.images ul li {
+    display: flex;
+    flex-direction: column;
+    /* flex-wrap: wrap; */
+    width: 150px;
+    margin-right: 5px;
+    margin-bottom: 5px;
+}
+
+.images ul li p {
+    overflow-wrap: break-word;
+}

@@ -48,9 +48,9 @@
                     <ul>
                         {% for imageData in imageDatas %}
                             <li>
-                                <input type="checkbox" name="choice" id="imageData{{ forloop.counter }}"
-                                    value="{{ imageData.id }}">
                                 <p>{{imageData.disp_order}}</p>
+                                <input type="checkbox" name="choice" class="chkImage" id="imageData{{ forloop.counter }}"
+                                    value="{{ imageData.id }}">
                                 <label for="imageData{{ forloop.counter }}">
                                     <img src="{{ imageData.thumbnail.url }}">
                                 </label>

@@ -8,8 +8,8 @@
 
 body {
     font-family: 'Open sans', sans-serif;
-    background: #fff;
-    color: #333;
+    background: #333;
+    color: #fff;
     line-height: 1.6;
 }
 
@@ -56,7 +56,7 @@ li {
 
 a {
     text-decoration: none;
-    color: #333;
+    color: #fff;
 }
 
 header {
@@ -152,10 +152,18 @@ header {
     flex-direction: column;
     /* flex-wrap: wrap; */
     width: 150px;
-    margin-right: 5px;
-    margin-bottom: 5px;
+    margin: 0 5px;
 }
 
 .images ul li p {
     overflow-wrap: break-word;
 }
+
+.chkImage {
+    display: none;
+ }
+
+.chkImage:checked + label {
+    border-top: 5px #f7c08a solid;
+    border-radius: 5px;
+ }

@@ -1,6 +1,7 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -10,7 +11,9 @@
     <link rel="stylesheet" href="{% static 'css/utilities.css' %}">
     <title>File Contents</title>
 </head>
+
 <body>
+
     <body>
         <header class="hero min">
             <div id="navbar" class="navbar bg-dark top">
@@ -29,43 +32,47 @@
 
         <form method="post">
             {% csrf_token %}
-            <div style="margin: 5px;">{{imageDatas.count}}件</div>
             <section class="operation">
-                <span style="margin: 5px;">出力するテキストファイル名</span>
+                <span>出力するテキストファイル名</span>
                 <input type="text" name="outputFileName" value="">
-                <input type="submit" class="btn-primary" value="画像ファイル削除" formaction="{% url 'imagelist:deleteimage' imageListId %}">
-                <input type="submit" class="btn-primary" value="テキストファイル作成" formaction="{% url 'imagelist:createimagelistfile' imageListId %}">
-                <input type="submit" class="btn-primary" value="画像リスト出力" formaction="{% url 'imagelist:outputimagelistfile' imageListId %}">
+                <input type="submit" class="btn-primary" value="画像ファイル削除"
+                    formaction="{% url 'imagelist:deleteimage' imageListId %}">
+                <input type="submit" class="btn-primary" value="テキストファイル作成"
+                    formaction="{% url 'imagelist:createimagelistfile' imageListId %}">
+                <input type="submit" class="btn-primary" value="画像リスト出力"
+                    formaction="{% url 'imagelist:outputimagelistfile' imageListId %}">
                 <select name="fileList">
                     {% for file in fileList %}
-                        <option value="{{ file.id }}">{{ file.file_name }}</option>
+                    <option value="{{ file.id }}">{{ file.file_name }}</option>
                     {% endfor %}
                 </select>
             </section>
+            <div>{{imageDatas.count}}件</div>
             <section class="images">
                 <fieldset>
                     {% if imageDatas %}
                     <ul>
                         {% for imageData in imageDatas %}
-                            <li>
-                                <p>{{imageData.disp_order}}</p>
-                                <input type="checkbox" name="choice" class="chkImage" id="imageData{{ forloop.counter }}"
-                                    value="{{ imageData.id }}">
-                                <label for="imageData{{ forloop.counter }}">
-                                    <img src="{{ imageData.thumbnail.url }}">
-                                </label>
-                                <p>{{imageData.file_path}}</p>
-                            </li>
+                        <li>
+                            <p>{{imageData.disp_order}}</p>
+                            <input type="checkbox" name="choice" class="chkImage" id="imageData{{ forloop.counter }}"
+                                value="{{ imageData.id }}">
+                            <label for="imageData{{ forloop.counter }}">
+                                <img src="{{ imageData.thumbnail.url }}">
+                            </label>
+                            <p>{{imageData.file_path}}</p>
+                        </li>
                         {% endfor %}
                     </ul>
                     {% else %}
-                        <p>No ImageDatas are available.</p>
+                    <p>No ImageDatas are available.</p>
                     {% endif %}
                 </fieldset>
             </section>
             <input type="submit" value="画像ファイル削除" formaction="{% url 'imagelist:deleteimage' imageListId %}">
             <input type="submit" value="テキストファイル作成" formaction="{% url 'imagelist:createimagelistfile' imageListId %}">
         </form>
-    </body>    
+    </body>
 </body>
+
 </html>

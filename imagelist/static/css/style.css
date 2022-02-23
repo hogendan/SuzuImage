@@ -166,4 +166,5 @@ header {
 .chkImage:checked + label {
     border-top: 5px #f7c08a solid;
     border-radius: 5px;
+    padding-top: 5px;
  }

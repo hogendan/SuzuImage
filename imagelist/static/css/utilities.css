@@ -13,6 +13,7 @@
     border-radius: 5px;
     padding: 10px;
     color: #fff;
+    cursor: pointer;
 }
 
 .btn-secondary {
@@ -21,6 +22,7 @@
     border-radius: 5px;
     padding: 5px;
     color: #fff;
+    cursor: pointer;
 }
 
 .btn-primary:hover, .btn-secondary:hover {

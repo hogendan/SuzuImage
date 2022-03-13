@@ -16,5 +16,6 @@ urlpatterns = [
     path('deleteall/', views.deleteAllData, name='deletealldata'),
     path('<int:imagelist_id>/deleteat/', views.deleteAt, name='deleteat'),
     path('<int:imageListId>/createimagelistfile/', views.createImageListFile, name='createimagelistfile'),
+    path('<int:imageListId>/appendimagelistfile/', views.appendImageListFile, name='appendimagelistfile'),
     path('<int:imageListId>/outputimagelistfile/', views.outputImageListFile, name='outputimagelistfile'),
 ]

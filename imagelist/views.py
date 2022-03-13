@@ -119,7 +119,6 @@ def deleteAt(request, imagelist_id):
 def createImageListFile(request, imageListId):
     try:
         outputFileName = request.POST.get('outputFileName') # ファイル名テキストボックス入力値
-        selectedImageListId = request.POST.get('fileList')  # 画像リストファイルコンボ選択値
         checkedList = request.POST.getlist('choice')        # 選択された画像ファイルID
         
         # ファイル名テキストが入力されていたら新規ファイルとして登録する。さらにその新規ファイルに選択画像を登録する。
@@ -136,13 +135,19 @@ def createImageListFile(request, imageListId):
                         'fileList': ImageList.objects.order_by('-id'),}
             return HttpResponseRedirect(reverse('imagelist:listview', 
                 args=(newImageList.pk, )), context)
+    except ImageList.DoesNotExist:
+        raise Http404("Image does not exist")
+    return HttpResponseRedirect(reverse('imagelist:listview', 
+        args=(imageListId, )), context)
 
-        # ファイル名テキストが未入力なら、選択されたファイルに画像を追加する
+def appendImageListFile(request, imageListId):
+    try:
+        selectedImageListId = request.POST.get('fileList')  # 画像リストファイルコンボ選択値
+        checkedList = request.POST.getlist('choice')        # 選択された画像ファイルID
+
+        # 選択されたファイルに画像を追加する
         detailDao = ImageListDetailDao()
         detailDao.register(checkedList, selectedImageListId)
-        '''
-        以下の処理は別のファイル出力処理を作るときに参考するため残してある
-        '''
 
         # 画像データを取得する
         imageDatas = ImageListDetail.objects.filter(imageList_id=imageListId)

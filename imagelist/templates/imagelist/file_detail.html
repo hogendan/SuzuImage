@@ -33,19 +33,28 @@
         <form method="post">
             {% csrf_token %}
             <section class="operation">
-                <span>出力するテキストファイル名</span>
+                <div class="file-create">
                 <input type="text" name="outputFileName" value="">
-                <input type="submit" class="btn-primary" value="画像ファイル削除"
-                    formaction="{% url 'imagelist:deleteimage' imageListId %}">
-                <input type="submit" class="btn-primary" value="テキストファイル作成"
+                    <input type="submit" class="btn-primary" value="選択した画像で新規リスト作成"
                     formaction="{% url 'imagelist:createimagelistfile' imageListId %}">
-                <input type="submit" class="btn-primary" value="画像リスト出力"
-                    formaction="{% url 'imagelist:outputimagelistfile' imageListId %}">
+                </div>
+                <div class="image-append">
                 <select name="fileList">
                     {% for file in fileList %}
                     <option value="{{ file.id }}">{{ file.file_name }}</option>
                     {% endfor %}
                 </select>
+                    <input type="submit" class="btn-primary" value="選択した画像を追加"
+                        formaction="{% url 'imagelist:appendimagelistfile' imageListId %}">
+                </div>
+                <div class="image-delete">
+                    <input type="submit" class="btn-primary" value="選択した画像をリストから削除"
+                        formaction="{% url 'imagelist:deleteimage' imageListId %}">
+                </div>
+                <div class="image-output">
+                    <input type="submit" class="btn-primary" value="表示中の画像をファイルに出力"
+                        formaction="{% url 'imagelist:outputimagelistfile' imageListId %}">
+                </div>
             </section>
             <div>{{imageDatas.count}}件</div>
             <section class="images">
@@ -69,8 +78,6 @@
                     {% endif %}
                 </fieldset>
             </section>
-            <input type="submit" value="画像ファイル削除" formaction="{% url 'imagelist:deleteimage' imageListId %}">
-            <input type="submit" value="テキストファイル作成" formaction="{% url 'imagelist:createimagelistfile' imageListId %}">
         </form>
     </body>
 </body>

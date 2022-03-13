@@ -48,6 +48,7 @@ body {
 
 .content h1 {
     font-size: 55px;
+    color: #eee;
 }
 
 li {
@@ -138,8 +139,46 @@ header {
 }
 
 /* File Contents */
+.current-file {
+    font-size: 1.7rem;
+    margin: 10px;
+}
+
 .operation {
-    margin: 30px;
+    display: grid;
+    grid-template-areas: 
+        'file-create image-append'
+        'image-delete image-output';
+    grid-gap: 10px;
+    margin: 10px;
+}
+
+.file-create {
+    grid-area: file-create;
+}
+
+.file-create input[type='text'] {
+    width: 200px;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.image-append {
+    grid-area: image-append; 
+}
+
+.image-append select {
+    width: 200px;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.image-delete {
+    grid-area: image-delete;
+}
+
+.image-output {
+    grid-area: image-output;
 }
 
 .images ul {

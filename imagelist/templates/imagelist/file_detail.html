@@ -30,20 +30,21 @@
             </div>
         </header>
 
+        <div class="current-file">{{ fileName }}</div>
         <form method="post">
             {% csrf_token %}
             <section class="operation">
                 <div class="file-create">
-                <input type="text" name="outputFileName" value="">
+                    <input type="text" name="outputFileName" value="">
                     <input type="submit" class="btn-primary" value="選択した画像で新規リスト作成"
-                    formaction="{% url 'imagelist:createimagelistfile' imageListId %}">
+                        formaction="{% url 'imagelist:createimagelistfile' imageListId %}">
                 </div>
                 <div class="image-append">
-                <select name="fileList">
-                    {% for file in fileList %}
-                    <option value="{{ file.id }}">{{ file.file_name }}</option>
-                    {% endfor %}
-                </select>
+                    <select name="fileList">
+                        {% for file in fileList %}
+                        <option value="{{ file.id }}">{{ file.file_name }}</option>
+                        {% endfor %}
+                    </select>
                     <input type="submit" class="btn-primary" value="選択した画像を追加"
                         formaction="{% url 'imagelist:appendimagelistfile' imageListId %}">
                 </div>

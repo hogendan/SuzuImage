@@ -7,6 +7,7 @@
     ・画像リストファイルの中の画像がリスト表示される
 '''
 import os
+from urllib import request
 from django.shortcuts import render
 from django.http import Http404, HttpResponseRedirect, FileResponse
 from django.urls import reverse
@@ -46,8 +47,9 @@ def fileList(request):
 def listview(request, imagelist_id):
     try:
         fileList = ImageList.objects.order_by('-id')
+        targetFileName = ImageList.objects.get(id=imagelist_id).file_name
         imageDatas = ImageListDetail.objects.filter(imageList_id=imagelist_id).order_by('disp_order')
-        context = {'imageDatas': imageDatas, 'imageListId': imagelist_id, 'fileList': fileList,}
+        context = {'imageDatas': imageDatas, 'imageListId': imagelist_id, 'fileList': fileList, 'fileName': targetFileName}
     except ImageList.DoesNotExist:
         raise Http404("Image does not exist")
     return render(request, 'imagelist/file_detail.html', context)

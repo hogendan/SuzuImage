@@ -1,6 +1,7 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -8,43 +9,44 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link rel="stylesheet" href="{% static 'css/utilities.css' %}">
-   <title>Admin Control</title>
+    <title>Admin Control</title>
 </head>
+
 <body>
-    <body>
-        <header class="hero min">
-            <div id="navbar" class="navbar bg-dark top">
-                <h1 class="logo">
-                    <span class="text-primary">Suzu</span> Image
-                </h1>
-                <nav>
-                    <ul>
-                        <li><a href="{% url 'imagelist:index' %}">Home</a></li>
-                        <li><a href="{% url 'imagelist:admin' %}">管理</a></li>
-                        <li><a href="{% url 'imagelist:filelist' %}">ファイル一覧</a></li>
-                    </ul>
-                </nav>
-            </div>
-        </header>
-    
-        <section class="admin-top">
-            <form method="POST">
-                {% csrf_token %}
-                <input type="submit" class="btn-primary" value="データ全削除" formaction="{% url 'imagelist:deletealldata' %}">
-                <input type="submit" class="btn-primary" value="作業フォルダ削除" formaction="">
-            </form>    
-            <h2>TODO: ファイルをリンクにして、詳細に遷移させる</h2>
-        </section>
-        <section class="admin-filelist">
-            <ul>
-                {% for filepath in filepath_list %}
-                <li class="filename-list">
-                    <span class="material-icons-outlined file-icon">text_snippet</span>
-                    <span class="filename">{{ filepath.file_name }}</span><a href="{% url 'imagelist:deleteat' filepath.id %}" class="btn-secondary">削除</a>
-                </li>
-                {% endfor %}                    
-            </ul>
-        </section>
-    </body>
+    <header class="hero min">
+        <div id="navbar" class="navbar bg-dark top">
+            <h1 class="logo">
+                <span class="text-primary">Suzu</span> Image
+            </h1>
+            <nav>
+                <ul>
+                    <li><a href="{% url 'imagelist:index' %}">Home</a></li>
+                    <li><a href="{% url 'imagelist:admin' %}">管理</a></li>
+                    <li><a href="{% url 'imagelist:filelist' %}">ファイル一覧</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section class="admin-top">
+        <form method="POST">
+            {% csrf_token %}
+            <input type="submit" class="btn-primary" value="データ全削除" formaction="{% url 'imagelist:deletealldata' %}">
+            <input type="submit" class="btn-primary" value="作業フォルダ削除" formaction="">
+        </form>
+        <h2>TODO: ファイルをリンクにして、詳細に遷移させる</h2>
+    </section>
+    <section class="admin-filelist">
+        <ul>
+            {% for filepath in filepath_list %}
+            <li class="filename-list">
+                <span class="material-icons-outlined file-icon">text_snippet</span>
+                <span class="filename">{{ filepath.file_name }}</span><a
+                    href="{% url 'imagelist:deleteat' filepath.id %}" class="btn-secondary">削除</a>
+            </li>
+            {% endfor %}
+        </ul>
+    </section>
 </body>
+
 </html>

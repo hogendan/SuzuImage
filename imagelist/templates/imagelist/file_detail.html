@@ -14,76 +14,74 @@
 
 <body>
 
-    <body>
-        <header class="hero min">
-            <div id="navbar" class="navbar bg-dark top">
-                <h1 class="logo">
-                    <span class="text-primary">Suzu</span> Image
-                </h1>
-                <nav>
-                    <ul>
-                        <li><a href="{% url 'imagelist:index' %}">Home</a></li>
-                        <li><a href="{% url 'imagelist:admin' %}">管理</a></li>
-                        <li><a href="{% url 'imagelist:filelist' %}">ファイル一覧</a></li>
-                    </ul>
-                </nav>
-            </div>
-        </header>
+    <header class="hero min">
+        <div id="navbar" class="navbar bg-dark top">
+            <h1 class="logo">
+                <span class="text-primary">Suzu</span> Image
+            </h1>
+            <nav>
+                <ul>
+                    <li><a href="{% url 'imagelist:index' %}">Home</a></li>
+                    <li><a href="{% url 'imagelist:admin' %}">管理</a></li>
+                    <li><a href="{% url 'imagelist:filelist' %}">ファイル一覧</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
 
-        <div class="current-file">{{ fileName }}</div>
-        <form method="post">
-            {% csrf_token %}
-            <section class="operation">
-                <div class="file-create">
-                    <input type="text" name="outputFileName" value="">
-                    <input type="submit" class="btn-primary" value="選択した画像で新規リスト作成"
-                        formaction="{% url 'imagelist:createimagelistfile' imageListId %}">
-                </div>
-                <div class="image-append">
-                    <select name="fileList">
-                        {% for file in fileList %}
-                        <option value="{{ file.id }}">{{ file.file_name }}</option>
-                        {% endfor %}
-                    </select>
-                    <input type="submit" class="btn-primary" value="選択した画像を追加"
-                        formaction="{% url 'imagelist:appendimagelistfile' imageListId %}">
-                </div>
-                <div class="image-delete">
-                    <input type="submit" class="btn-primary" value="選択した画像をリストから削除"
-                        formaction="{% url 'imagelist:deleteimage' imageListId %}">
-                </div>
-                <div class="image-output">
-                    <input type="submit" class="btn-primary" value="表示中の画像をファイルに出力"
-                        formaction="{% url 'imagelist:outputimagelistfile' imageListId %}">
-                </div>
-            </section>
-            <div>{{imageDatas.count}}件</div>
-            <section class="images">
-                <fieldset>
-                    {% if imageDatas %}
-                    <ul>
-                        {% for imageData in imageDatas %}
-                        <li>
-                            <p>{{imageData.disp_order}}</p>
-                            <input type="checkbox" name="choice" class="chkImage" id="imageData{{ forloop.counter }}"
-                                value="{{ imageData.id }}">
-                            <label for="imageData{{ forloop.counter }}">
-                                <img src="{{ imageData.thumbnail.url }}">
-                            </label>
-                            <details>
-                                <summary>パスを表示</summary>
-                                <p>{{imageData.file_path}}</p>
-                            </details>
-                        </li>
-                        {% endfor %}
-                    </ul>
-                    {% else %}
-                    <p>No ImageDatas are available.</p>
-                    {% endif %}
-                </fieldset>
-            </section>
-        </form>
-    </body>
+    <div class="current-file">{{ fileName }}</div>
+    <form method="post">
+        {% csrf_token %}
+        <section class="operation">
+            <div class="file-create">
+                <input type="text" name="outputFileName" value="">
+                <input type="submit" class="btn-primary" value="選択した画像で新規リスト作成"
+                    formaction="{% url 'imagelist:createimagelistfile' imageListId %}">
+            </div>
+            <div class="image-append">
+                <select name="fileList">
+                    {% for file in fileList %}
+                    <option value="{{ file.id }}">{{ file.file_name }}</option>
+                    {% endfor %}
+                </select>
+                <input type="submit" class="btn-primary" value="選択した画像を追加"
+                    formaction="{% url 'imagelist:appendimagelistfile' imageListId %}">
+            </div>
+            <div class="image-delete">
+                <input type="submit" class="btn-primary" value="選択した画像をリストから削除"
+                    formaction="{% url 'imagelist:deleteimage' imageListId %}">
+            </div>
+            <div class="image-output">
+                <input type="submit" class="btn-primary" value="表示中の画像をファイルに出力"
+                    formaction="{% url 'imagelist:outputimagelistfile' imageListId %}">
+            </div>
+        </section>
+        <div>{{imageDatas.count}}件</div>
+        <section class="images">
+            <fieldset>
+                {% if imageDatas %}
+                <ul>
+                    {% for imageData in imageDatas %}
+                    <li>
+                        <p>{{imageData.disp_order}}</p>
+                        <input type="checkbox" name="choice" class="chkImage" id="imageData{{ forloop.counter }}"
+                            value="{{ imageData.id }}">
+                        <label for="imageData{{ forloop.counter }}">
+                            <img src="{{ imageData.thumbnail.url }}">
+                        </label>
+                        <details>
+                            <summary>パスを表示</summary>
+                            <p>{{imageData.file_path}}</p>
+                        </details>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p>No ImageDatas are available.</p>
+                {% endif %}
+            </fieldset>
+        </section>
+    </form>
 </body>
 
 </html>

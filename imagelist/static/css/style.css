@@ -1,5 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;1,300&display=swap');
-        
+
 * {
     box-sizing: border-box;
     margin: 0;
@@ -118,7 +118,7 @@ header {
     margin-right: 10px;
 }
 
-.filename-list .filename  {
+.filename-list .filename {
     /* display: inline-block; */
     width: 200px;
 }
@@ -146,7 +146,7 @@ header {
 
 .operation {
     display: grid;
-    grid-template-areas: 
+    grid-template-areas:
         'file-create image-append'
         'image-delete image-output';
     grid-gap: 10px;
@@ -164,7 +164,7 @@ header {
 }
 
 .image-append {
-    grid-area: image-append; 
+    grid-area: image-append;
 }
 
 .image-append select {
@@ -192,18 +192,23 @@ header {
     /* flex-wrap: wrap; */
     width: 150px;
     margin: 0 5px;
+    font-size: 8pt;
 }
 
 .images ul li p {
     overflow-wrap: break-word;
 }
 
+.images ul li summary {
+    cursor: pointer;
+}
+
 .chkImage {
     display: none;
- }
+}
 
-.chkImage:checked + label {
+.chkImage:checked+label {
     border-top: 5px #f7c08a solid;
     border-radius: 5px;
     padding-top: 5px;
- }
+}

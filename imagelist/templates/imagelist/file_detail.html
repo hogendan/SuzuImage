@@ -70,7 +70,10 @@
                             <label for="imageData{{ forloop.counter }}">
                                 <img src="{{ imageData.thumbnail.url }}">
                             </label>
-                            <p>{{imageData.file_path}}</p>
+                            <details>
+                                <summary>パスを表示</summary>
+                                <p>{{imageData.file_path}}</p>
+                            </details>
                         </li>
                         {% endfor %}
                     </ul>

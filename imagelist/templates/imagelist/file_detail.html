@@ -57,7 +57,7 @@
             </div>
         </section>
         <div>{{imageDatas.count}}件</div>
-        <section class="images">
+        <section id="images" class="images">
             <fieldset>
                 {% if imageDatas %}
                 <ul>
@@ -67,7 +67,7 @@
                         <input type="checkbox" name="choice" class="chkImage" id="imageData{{ forloop.counter }}"
                             value="{{ imageData.id }}">
                         <label for="imageData{{ forloop.counter }}">
-                            <img src="{{ imageData.thumbnail.url }}">
+                            <img src="{{ imageData.thumbnail.url }}" data-origin-url="{{ imageData.image_data.url }}">
                         </label>
                         <details>
                             <summary>パスを表示</summary>
@@ -82,6 +82,15 @@
             </fieldset>
         </section>
     </form>
+
+    <script>
+        const images = document.getElementById('images').getElementsByTagName('img');
+        for (const image of images) {
+            image.addEventListener('dblclick', function () {
+                window.open(image.getAttribute('data-origin-url'), "", "width=600, height=600");
+            });
+        }
+    </script>
 </body>
 
 </html>
